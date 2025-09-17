@@ -1,0 +1,10 @@
+Introduction:
+The website allows users to explore historical events  that happened on a specific date. Users can select a date from a date picker, and the website will display notable events, births, deaths, 
+or anniversaries that occurred on that day throughout history.
+
+How It Works:
+1.When a user selects a date, the JavaScript function (fetchHistory) processes the input and displays the corresponding historical events.
+2.The historical events are currently hardcoded for specific dates (e.g., "October 10th"), but this can be replaced with an API for more dynamic, real-time data.
+3.If no events are found for the selected date, the website shows a default message such as "No historical events found for this date."
+
+This project is a fun, interactive way to explore the past and can be easily expanded to include a range of features or dynamic data through API integration.
