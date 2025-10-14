@@ -1,87 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>History on This Day</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>This Day in History</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      text-align: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      color: #333;
       margin: 0;
-      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      box-sizing: border-box;
     }
-    header {
-      background: #333;
+    h1 {
+      margin-bottom: 1rem;
+      font-weight: 700;
+      color: #222;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    input[type="date"] {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 2px solid #555;
+      margin-bottom: 1.5rem;
+      outline-offset: 2px;
+      outline-color: #74ebd5;
+    }
+    button {
+      background-color: #4a90e2;
       color: white;
-      padding: 20px;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 2rem;
     }
-    section {
-      margin: 40px;
+    button:hover {
+      background-color: #357ABD;
     }
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px;
-    }
-    .history-box {
+    .event-box {
+      max-width: 600px;
       background: white;
-      padding: 20px;
-      margin: 20px auto;
-      width: 60%;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      text-align: left;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      padding: 2rem;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #222;
+      text-align: center;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    footer {
+      margin-top: auto;
+      font-size: 0.9rem;
+      color: #444;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>📅 History on This Date</h1>
-    <p>Find out what happened on any day in history!</p>
-  </header>
+  <h1>This Day in History</h1>
+  
+  <label for="datePicker">Select a date:</label>
+  <input type="date" id="datePicker" />
+  <button id="showEventBtn">Show Event</button>
+  
+  <div class="event-box" id="eventBox">
+    Select a date above and click "Show Event" to see a historical fact!
+  </div>
 
-  <section>
-    <input type="date" id="dateInput">
-    <button onclick="showHistory()">Show History</button>
-    <div id="historyResult"></div>
-  </section>
+  <footer>
+    Made with 💡 by Manojna.
+  </footer>
 
   <script>
-    async function showHistory() {
-      const dateInput = document.getElementById("dateInput").value;
-      const resultDiv = document.getElementById("historyResult");
-      resultDiv.innerHTML = ""; 
+    // Predefined events (month-day as key)
+    const historyEvents = {
+      "01-01": "45 BC – The Julian calendar takes effect for the first time.",
+      "02-14": "1929 – The Saint Valentine's Day Massacre in Chicago marks a turning point in gang warfare.",
+      "03-15": "44 BC – Julius Caesar is assassinated on the Ides of March.",
+      "04-12": "1861 – The American Civil War begins with the attack on Fort Sumter.",
+      "05-20": "1927 – Charles Lindbergh completes the first solo nonstop transatlantic flight.",
+      "06-06": "1944 – D-Day: Allied forces land on the beaches of Normandy during WWII.",
+      "07-20": "1969 – Apollo 11 astronauts land on the Moon.",
+      "08-15": "1947 – India gains independence from British rule.",
+      "09-02": "1945 – WWII officially ends with Japan's surrender.",
+      "10-31": "1517 – Martin Luther nails his 95 Theses to the church door, sparking the Protestant Reformation.",
+      "11-09": "1989 – The Berlin Wall falls, marking the nearing end of the Cold War.",
+      "12-25": "800 – Charlemagne is crowned Emperor of the Romans by Pope Leo III."
+    };
 
-      if (!dateInput) {
-        resultDiv.innerHTML = "<p>Please select a date.</p>";
+    const datePicker = document.getElementById('datePicker');
+    const showEventBtn = document.getElementById('showEventBtn');
+    const eventBox = document.getElementById('eventBox');
+
+    showEventBtn.addEventListener('click', () => {
+      const selectedDate = datePicker.value;
+      if (!selectedDate) {
+        eventBox.textContent = "Please select a valid date!";
         return;
       }
-
-      const date = new Date(dateInput);
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-
-      try {
-        // Free history API (Today in History byabbe.se)
-        const response = await fetch(`https://byabbe.se/on-this-day/${month}/${day}/events.json`);
-        const data = await response.json();
-
-        if (data.events && data.events.length > 0) {
-          data.events.slice(0, 5).forEach(event => { // limit to 5 events
-            let div = document.createElement("div");
-            div.className = "history-box";
-            div.innerHTML = `<strong>${event.year}</strong> – ${event.description}`;
-            resultDiv.appendChild(div);
-          });
-        } else {
-          resultDiv.innerHTML = "<p>No events found for this date.</p>";
-        }
-      } catch (error) {
-        resultDiv.innerHTML = "<p>⚠️ Could not fetch history data. Try again later.</p>";
+      // Extract month and day in MM-DD format
+      const monthDay = selectedDate.slice(5);
+      if (historyEvents[monthDay]) {
+        eventBox.textContent = historyEvents[monthDay];
+      } else {
+        eventBox.textContent = "Sorry, no historical event recorded for this date.";
       }
-    }
+    });
   </script>
 </body>
 </html>
